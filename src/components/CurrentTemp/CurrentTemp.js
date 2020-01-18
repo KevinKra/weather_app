@@ -1,24 +1,30 @@
 import React, { Component } from 'react';
-import { fetchCurrentTemp } from '../../utils/api_calls';
+import { fetchTemperatures } from '../../utils/api_calls';
 
 export default class CurrentTemp extends Component {
 	state = {
-		temperature: '',
-		location: ''
+		temperature: null,
+		location: null
 	};
 	async componentDidMount() {
-		const { main, name } = await fetchCurrentTemp();
+		const { main, name } = await fetchTemperatures();
 		this.setState({
-			temperature: Math.floor(main.temp),
+			temperature: Math.round(main.temp),
 			location: name
 		});
 	}
 	render() {
-		return (
-			<section>
-				<h4>Current Temperature for {this.state.location}</h4>
-				<p>{this.state.temperature} F</p>
-			</section>
-		);
+		const { temperature, location } = this.state;
+		if (!temperature) {
+			return <p>Loading</p>;
+		} else {
+			return (
+				<section>
+					<h4>
+						Current Temperature for {location}: {temperature}F
+					</h4>
+				</section>
+			);
+		}
 	}
 }
